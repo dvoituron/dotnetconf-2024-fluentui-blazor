@@ -1,4 +1,5 @@
 ﻿@page "/weather"
+@rendermode RenderMode.InteractiveServer
 @attribute [StreamRendering]
 
 <PageTitle>Weather</PageTitle>
@@ -9,15 +10,27 @@
 
 @if (forecasts == null)
 {
-    <p><em>Loading...</em></p>
+    <FluentProgressRing>Loading...</FluentProgressRing>
 }
 else
 {
     <!-- This page is rendered in SSR mode, so the FluentDataGrid component does not offer any interactivity (like sorting). -->
-    <FluentDataGrid Id="weathergrid" Items="@forecasts" GridTemplateColumns="1fr 1fr 1fr 2fr" TGridItem="WeatherForecast">
+    <FluentDataGrid Id="weathergrid" ResizableColumns="true" Items="@forecasts" GridTemplateColumns="1fr 1fr 1fr 1fr 2fr" TGridItem="WeatherForecast">
         <PropertyColumn Title="Date" Property="@(c => c!.Date)" Align="Align.Start"/>
         <PropertyColumn Title="Temp. (C)" Property="@(c => c!.TemperatureC)" Align="Align.Center"/>
-        <PropertyColumn Title="Temp. (F)" Property="@(c => c!.TemperatureF)" Align="Align.Center"/>
+        <PropertyColumn Title="Temp. (F)" Sortable="true" Property="@(c => c!.TemperatureF)" Align="Align.Center"/>
+        <TemplateColumn Title="Icon">
+            @if (context.TemperatureC > 10)
+            {
+                <FluentIcon Value="@(new Icons.Regular.Size24.WeatherHailNight())"
+                            Color="@Color.Neutral" />
+            }
+            else
+            {
+                <FluentIcon Value="@(new Icons.Regular.Size24.TimeAndWeather())"
+                            Color="@Color.Neutral" />
+            }
+        </TemplateColumn>
         <PropertyColumn Title="Summary" Property="@(c => c!.Summary)" Align="Align.End"/>
     </FluentDataGrid>
 }
