@@ -1,6 +1,7 @@
 ﻿@page "/register"
 @rendermode RenderMode.InteractiveServer
 @inject IDialogService DialogService
+@inject IToastService ToastService
 
 <PageTitle>New user</PageTitle>
 
@@ -63,10 +64,12 @@
         //             message: "Your account has been successfully created",
         //             title: "New user");
 
-        await DialogService.ShowDialogAsync<AccountCreatedDialog>(new DialogParameters()
-            {
-                Title = "New user",
-            });
+        // await DialogService.ShowDialogAsync<AccountCreatedDialog>(new DialogParameters()
+        //     {
+        //         Title = "New user",
+        //     });
+
+        ToastService.ShowSuccess("Your account has been successfully created");
 
         Loading = false;
     }
