@@ -27,6 +27,25 @@
                      Required
                      Placeholder="Enter your email"
                      @bind-Value="@Data.Email" />
+
+    <FluentAutocomplete TOption="Country"
+                        Label="Select a country"
+                        Width="250px"
+                        Placeholder="Select countries"
+                        OnOptionsSearch="@OnSearchAsync"
+                        MaximumSelectedOptions="1"
+                        OptionText="@(i => i.Name)"
+                        @bind-SelectedOptions="@Data.Countries">
+
+        <OptionTemplate Context="country">
+            @country.HtmlFlagAndName
+        </OptionTemplate>
+
+        <MaximumSelectedOptionsMessage>
+            Please select only one country.
+        </MaximumSelectedOptionsMessage>
+    </FluentAutocomplete>
+
     <br />
     <FluentCheckbox Label="I agree to all terms, conditions, privacy policy."
                     @bind-Value="@AcceptToCreate" />
@@ -74,11 +93,22 @@
         Loading = false;
     }
 
+    // Add this new method
+    private async Task OnSearchAsync(OptionsSearchEventArgs<Country> e)
+    {
+        e.Items = Country.All.Where(i => i.Name.StartsWith(e.Text,
+                                                StringComparison.OrdinalIgnoreCase))
+                            .OrderBy(i => i.Name);
+
+        await Task.CompletedTask;
+    }
+
     public class RegisterUser
     {
         public string? LastName { get; set; }
         public string? FistName { get; set; } = "Denis";
         public DateTime? BirthDate { get; set; }
         public string? Email { get; set; } = "dvoituron@microsoft.com";
+        public IEnumerable<Country> Countries { get; set; } = Array.Empty<Country>();
     }
 }
