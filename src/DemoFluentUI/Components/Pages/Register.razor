@@ -1,5 +1,6 @@
 ﻿@page "/register"
 @rendermode RenderMode.InteractiveServer
+@inject IDialogService DialogService
 
 <PageTitle>New user</PageTitle>
 
@@ -57,14 +58,24 @@
         // Simulate asynchronous loading
         await Task.Delay(1000);
 
+        // Confirmation
+        // await DialogService.ShowInfoAsync(
+        //             message: "Your account has been successfully created",
+        //             title: "New user");
+
+        await DialogService.ShowDialogAsync<AccountCreatedDialog>(new DialogParameters()
+            {
+                Title = "New user",
+            });
+
         Loading = false;
     }
 
     public class RegisterUser
     {
         public string? LastName { get; set; }
-        public string? FistName { get; set; }
+        public string? FistName { get; set; } = "Denis";
         public DateTime? BirthDate { get; set; }
-        public string? Email { get; set; }
+        public string? Email { get; set; } = "dvoituron@microsoft.com";
     }
-    }
+}
